@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="subsidio.API/subsidio.API.csproj" />
+  <Project Path="subsidio.Business/subsidio.Business.csproj" />
+  <Project Path="subsidio.Dominio/subsidio.Dominio.csproj" />
+  <Project Path="subsidio.Infraestructura/subsidio.Infraestructura.csproj" />
+</Solution>
