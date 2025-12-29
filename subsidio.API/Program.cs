@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using subsidio.Business.services;
 using subsidio.Infraestructura.Data;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,10 @@ builder.Services.AddControllers();
 // Configuración para que funcione Swagger (Swashbuckle)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// ZONA DE INYECCIÓN DE DEPENDENCIAS
+// Le decimos al sistema: "Cuando alguien pida IMedicamentoService, dale una instancia de MedicamentoService"
+builder.Services.AddScoped<IMedicamentoService, MedicamentoService>();
 
 var app = builder.Build();
 

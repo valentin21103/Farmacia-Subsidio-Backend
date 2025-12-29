@@ -11,7 +11,13 @@ namespace subsidio.Infraestructura.Data
 
       public  DbSet<Usuario> Usuarios => Set<Usuario>();
       public  DbSet<Medicamentos> Medicamentos => Set<Medicamentos>();
-      public   DbSet<SolicitudSubsidio> SolicitudSubsidios => Set<SolicitudSubsidio>();
+
+        /*
+          public DbSet<Medicamentos>: Esto le dice a C#: "Oye, esto va a ser una Tabla (DbSet) llena de objetos del tipo Medicamentos".
+
+          Medicamentos (El segundo nombre): ¡ESTA ES LA CLAVE! 🔑 Este es el Nombre de la Propiedad. Es el "apodo" con el que vas a llamar a la tabla desde el código.
+         */
+        public DbSet<SolicitudSubsidio> SolicitudSubsidios => Set<SolicitudSubsidio>();
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
