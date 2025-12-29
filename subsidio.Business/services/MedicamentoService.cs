@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using subsidio.Dominio.DTOs;
 using subsidio.Dominio.Entities;
 using subsidio.Infraestructura.Data;
 using System;
@@ -31,12 +32,19 @@ namespace subsidio.Business.services
             return await _context.Medicamentos.ToListAsync();
         }
 
-        public async Task<Medicamentos> Crear(Medicamentos medicamento)
+        public async Task<Medicamentos> Crear(CrearMedicamentoDTO dto)
         {
-            _context.Medicamentos.Add(medicamento);
+            var nuevoMedicamento = new Medicamentos
+            {
+                Nombre = dto.Nombre,
+                Descripcion = dto.Descripcion,
+                Precio = dto.Precio,
+                CantidadEnStock = dto.CantidadEnStock
+            };
 
+            _context.Medicamentos.Add(nuevoMedicamento);
             await _context.SaveChangesAsync();
-            return medicamento;
+            return nuevoMedicamento;
         }
 
         public async Task<bool> Eliminar(int id)

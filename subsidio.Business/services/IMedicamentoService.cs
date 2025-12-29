@@ -1,4 +1,5 @@
-﻿using subsidio.Dominio.Entities;
+﻿using subsidio.Dominio.DTOs;
+using subsidio.Dominio.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,7 +15,7 @@ namespace subsidio.Business.services
         Task<Medicamentos?> ObtenerPorId(int id);
 
         // 3. Recibe un objeto, lo guarda y me devuelve el ticket con el objeto final
-        Task<Medicamentos> Crear(Medicamentos medicamento);
+        Task<Medicamentos> Crear(CrearMedicamentoDTO medicamentoDTO);
 
         // 4. Recibe un ID y me devuelve un ticket que dirá "Éxito" o "Fallo"
         Task<bool> Eliminar(int id);
