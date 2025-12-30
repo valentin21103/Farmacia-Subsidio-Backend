@@ -24,6 +24,7 @@ builder.Services.AddSwaggerGen();
 
 // ZONA DE INYECCIÓN DE DEPENDENCIAS
 // Le decimos al sistema: "Cuando alguien pida IMedicamentoService, dale una instancia de MedicamentoService"
+builder.Services.AddScoped<SolicitudService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IMedicamentoService, MedicamentoService>();
 
