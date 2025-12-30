@@ -9,6 +9,6 @@ namespace subsidio.Dominio.DTOs
         public required string Nombre { get; set; }
         public required string Apellido { get; set; }
         public required string CorreoElectronico { get; set; }
-        public required string Password { get; set; } // Aquí SÍ pedimos el password
+        public required string Contrasena { get; set; } // Aquí SÍ pedimos el password
     }
 }

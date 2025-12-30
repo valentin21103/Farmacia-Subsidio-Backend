@@ -18,5 +18,6 @@ namespace subsidio.Dominio.Entities
 
         public DateTime FechaSolicitud { get; set; } = DateTime.UtcNow; // <--- Otro valor por defecto (pone la hora actual sola)
         public Enums.EstadoSolicitud Estado { get; set; } = Enums.EstadoSolicitud.Pendiente;    // al hacer esto dejamos un valor por defecto
+
     }
 }

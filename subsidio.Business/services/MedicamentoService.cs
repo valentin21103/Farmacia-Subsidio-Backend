@@ -53,7 +53,7 @@ namespace subsidio.Business.services
             var medicamento = await _context.Medicamentos.FindAsync(id);
 
             // Si es null, no hay nada que borrar
-            if (medicamento == null) return false;
+            if (medicamento == null) return false; // si es falso el metodo muere ahi mismo
 
             // Si existe, lo marcamos para borrar
             _context.Medicamentos.Remove(medicamento);

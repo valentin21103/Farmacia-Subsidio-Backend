@@ -8,6 +8,5 @@ namespace subsidio.Dominio.DTOs
     {
         public required int UsuarioId { get; set; }
         public required int MedicamentoId { get; set; }
-        public required int CantidadSolicitada { get; set; }
     }
 }

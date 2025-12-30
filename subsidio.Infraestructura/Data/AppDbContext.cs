@@ -19,7 +19,7 @@ namespace subsidio.Infraestructura.Data
          */
         public DbSet<SolicitudSubsidio> SolicitudSubsidios => Set<SolicitudSubsidio>();
 
-
+    
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Medicamentos>()
