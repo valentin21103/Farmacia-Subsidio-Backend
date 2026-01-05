@@ -16,5 +16,6 @@ namespace subsidio.Business.services
 
         Task<bool> Eliminar(int id);
 
+        Task<Usuario?> Login(LoginDTO loginDto);
     }
 }

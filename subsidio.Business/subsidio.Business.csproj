@@ -12,4 +12,9 @@
     <ProjectReference Include="..\subsidio.Infraestructura\subsidio.Infraestructura.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="services\b\" />
+  </ItemGroup>
+
 </Project>

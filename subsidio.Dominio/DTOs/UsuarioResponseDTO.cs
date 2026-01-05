@@ -11,5 +11,8 @@ namespace subsidio.Dominio.DTOs
         public required string Apellido { get; set; }
 
         public required string CorreoElectronico { get; set; }
+
+     
+        public required string Roll { get; set; }
     }
 }

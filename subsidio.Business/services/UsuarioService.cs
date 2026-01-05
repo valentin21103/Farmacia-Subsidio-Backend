@@ -53,5 +53,11 @@ namespace subsidio.Business.services
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<Usuario?> Login(LoginDTO loginDto)
+        {
+            return await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.CorreoElectronico == loginDto.Email && u.Contrasena == loginDto.Password);
+        }
     }
 }

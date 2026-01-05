@@ -20,30 +20,30 @@ namespace subsidio.API.Controllers
 
         [HttpGet("{id}")]
 
-    public async Task<ActionResult<UsuarioResponseDTO>> ObtenerPorId(int id)
-{
-    // 1. BUSCAR: Traemos la entidad completa (la "sucia" con password)
-    var usuarioEntidad = await _usuarioSevice.ObtenerPorId(id);
+        public async Task<ActionResult<UsuarioResponseDTO>> ObtenerPorId(int id)
+        {
+            // 1. BUSCAR: Traemos la entidad completa (la "sucia" con password)
+            var usuarioEntidad = await _usuarioSevice.ObtenerPorId(id);
 
-    // 2. VALIDAR
-    if (usuarioEntidad == null) 
-    { 
-        return NotFound("No se encontro el usuario"); 
-    }
+            // 2. VALIDAR
+            if (usuarioEntidad == null)
+            {
+                return NotFound("No se encontro el usuario");
+            }
 
-    // 3. CONVERTIR (El momento mágico ✨)
-    // Aquí creas la caja limpia y le pasas los datos de la entidad
-    var usuarioLimpio = new UsuarioResponseDTO
-    {
-        Nombre = usuarioEntidad.Nombre, // "Lo que saqué de la DB" va a "La caja limpia"
-        Apellido = usuarioEntidad.Apellido,
-        CorreoElectronico = usuarioEntidad.CorreoElectronico
-        // ¡Y NO pongas password!
-    };
+            // 3. CONVERTIR (El momento mágico ✨)
+            // Aquí creas la caja limpia y le pasas los datos de la entidad
+            var usuarioLimpio = new UsuarioResponseDTO
+            {
+                Nombre = usuarioEntidad.Nombre, // "Lo que saqué de la DB" va a "La caja limpia"
+                Apellido = usuarioEntidad.Apellido,
+                CorreoElectronico = usuarioEntidad.CorreoElectronico
+                // ¡Y NO pongas password!
+            };
 
-    // 4. DEVOLVER LA CAJA LIMPIA
-    return Ok(usuarioLimpio);
-}
+            // 4. DEVOLVER LA CAJA LIMPIA
+            return Ok(usuarioLimpio);
+        }
 
 
 
@@ -117,6 +117,30 @@ namespace subsidio.API.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpPost("Login")]
+        public async Task<ActionResult<UsuarioResponseDTO>> Login(LoginDTO loginDto)
+        {
+            var usuarioEntidad = await _usuarioSevice.Login(loginDto);
+
+            // CASO 1: NO LO ENCUENTRO (Es null) -> Devuelvo 401 y Mensaje de Texto
+            if (usuarioEntidad == null)
+            {
+                return Unauthorized("Usuario o contraseña incorrectos");
+            }
+
+            // CASO 2: SÍ LO ENCUENTRO -> Preparo los datos...
+            var usuarioLimpio = new UsuarioResponseDTO
+            {
+                Nombre = usuarioEntidad.Nombre,
+                Apellido = usuarioEntidad.Apellido,
+                CorreoElectronico = usuarioEntidad.CorreoElectronico,
+                Roll =  usuarioEntidad.Roll.ToString()
+            };
+
+            // ... Y devuelvo 200 OK (Verde)
+            return Ok(usuarioLimpio); // <--- ¡Asegúrate que diga Ok aquí!
         }
 
     }
