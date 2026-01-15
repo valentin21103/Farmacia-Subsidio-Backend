@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using subsidio.Dominio;
 using subsidio.Dominio.DTOs;
 using subsidio.Dominio.Entities;
 using subsidio.Infraestructura.Data;
@@ -35,8 +36,12 @@ namespace subsidio.Business.services
                 Nombre = dto.Nombre,
                 Apellido = dto.Apellido,
                 CorreoElectronico = dto.CorreoElectronico,
-                Contrasena = dto.Contrasena
-
+                Contrasena = dto.Contrasena,
+                Edad = dto.Edad,
+                // --- AQUÍ ESTÁ EL CAMBIO ---
+                // Usamos el traductor para convertir el String al Enum
+                Genero = Enum.Parse<Enums.TipoDeGenero>(dto.Genero),
+                Roll = Enums.Nivel.Usuario
             };
 
             _context.Usuarios.Add(NuevoUsuario);

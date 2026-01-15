@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using subsidio.Business.services;
+using subsidio.Dominio;
 using subsidio.Dominio.DTOs;
 using subsidio.Dominio.Entities;
 
@@ -17,12 +18,10 @@ namespace subsidio.API.Controllers
             _usuarioSevice = usuarioService;
         }
 
-
         [HttpGet("{id}")]
-
         public async Task<ActionResult<UsuarioResponseDTO>> ObtenerPorId(int id)
         {
-            // 1. BUSCAR: Traemos la entidad completa (la "sucia" con password)
+            // 1. BUSCAR
             var usuarioEntidad = await _usuarioSevice.ObtenerPorId(id);
 
             // 2. VALIDAR
@@ -31,82 +30,63 @@ namespace subsidio.API.Controllers
                 return NotFound("No se encontro el usuario");
             }
 
-            // 3. CONVERTIR (El momento mágico ✨)
-            // Aquí creas la caja limpia y le pasas los datos de la entidad
+            // 3. CONVERTIR (Con ID incluido)
             var usuarioLimpio = new UsuarioResponseDTO
             {
-                Nombre = usuarioEntidad.Nombre, // "Lo que saqué de la DB" va a "La caja limpia"
+                Id = usuarioEntidad.Id, // <--- ¡IMPORTANTE!
+                Nombre = usuarioEntidad.Nombre,
                 Apellido = usuarioEntidad.Apellido,
-                CorreoElectronico = usuarioEntidad.CorreoElectronico
-                // ¡Y NO pongas password!
+                CorreoElectronico = usuarioEntidad.CorreoElectronico,
+                Roll = usuarioEntidad.Roll.ToString(),
+                Genero = usuarioEntidad.Genero.ToString()
             };
 
-            // 4. DEVOLVER LA CAJA LIMPIA
+            // 4. DEVOLVER
             return Ok(usuarioLimpio);
         }
-
-
-
 
         [HttpGet]
         public async Task<ActionResult<List<UsuarioResponseDTO>>> ObtenerTodos()
         {
-            // PASO 1: Traemos el camión con toda la carga sucia (Entidades con password)
-            // 'usuariosEntidad' es una LISTA (List<Usuario>)
             var usuariosEntidad = await _usuarioSevice.ObtenerTodos();
-
-            // PASO 2: Preparamos una caja nueva y vacía para poner lo limpio
-            // Al principio, esta lista tiene 0 elementos.
             var listaLimpia = new List<UsuarioResponseDTO>();
 
-            // PASO 3: La Cinta Transportadora (El Bucle)
-            // Por cada 'u' (un usuario individual) que haya en la lista 'usuariosEntidad'...
             foreach (var u in usuariosEntidad)
             {
-                // ... creamos un DTO limpio solo para ÉL ...
                 var dto = new UsuarioResponseDTO
                 {
-                    Nombre = u.Nombre,       // Aquí SI funciona, porque 'u' es UNO solo
+                    Id = u.Id, // <--- ¡IMPORTANTE!
+                    Nombre = u.Nombre,
                     Apellido = u.Apellido,
-                    CorreoElectronico = u.CorreoElectronico
-                    // La password la ignoramos
+                    CorreoElectronico = u.CorreoElectronico,
+                    Roll = u.Roll.ToString(),
+                    Genero = u.Genero.ToString()
                 };
-
-                // ... y lo guardamos en la caja nueva.
                 listaLimpia.Add(dto);
             }
 
-            // PASO 4: Entregamos la caja que llenamos
             return Ok(listaLimpia);
         }
 
-
         [HttpPost]
-        // CAMBIO 1: Prometemos devolver un DTO, NO una entidad
         public async Task<ActionResult<UsuarioResponseDTO>> Crear(CrearUsuarioDTO usuarioDto)
         {
-            // 1. El servicio hace el trabajo sucio (crear y guardar con password)
             var nuevoUsuario = await _usuarioSevice.Crear(usuarioDto);
 
-            // 2. LIMPIEZA: Convertimos la entidad creada a un DTO limpio
-            // (Para no devolver la contraseña en el JSON de respuesta)
             var usuarioLimpio = new UsuarioResponseDTO
             {
+                Id = nuevoUsuario.Id, // <--- ¡IMPORTANTE!
                 Nombre = nuevoUsuario.Nombre,
                 Apellido = nuevoUsuario.Apellido,
-                CorreoElectronico = nuevoUsuario.CorreoElectronico
+                CorreoElectronico = nuevoUsuario.CorreoElectronico,
+                Roll = nuevoUsuario.Roll.ToString(),
+                Genero = nuevoUsuario.Genero.ToString()
             };
 
-            // 3. RETORNO SEGURO
-            // Param 1: A qué método llamar para verlo después (ObtenerPorId)
-            // Param 2: El ID necesario para ese método (nuevoUsuario.Id)
-            // Param 3: EL OBJETO LIMPIO que verá el usuario en su pantalla
             return CreatedAtAction(nameof(ObtenerPorId), new { id = nuevoUsuario.Id }, usuarioLimpio);
         }
 
         [HttpDelete("{id}")]
-
-
         public async Task<ActionResult> Eliminar(int id)
         {
             var UsuarioExiste = await _usuarioSevice.Eliminar(id);
@@ -124,24 +104,24 @@ namespace subsidio.API.Controllers
         {
             var usuarioEntidad = await _usuarioSevice.Login(loginDto);
 
-            // CASO 1: NO LO ENCUENTRO (Es null) -> Devuelvo 401 y Mensaje de Texto
+            // CASO 1: ERROR
             if (usuarioEntidad == null)
             {
                 return Unauthorized("Usuario o contraseña incorrectos");
             }
 
-            // CASO 2: SÍ LO ENCUENTRO -> Preparo los datos...
+            // CASO 2: ÉXITO (Aquí es donde fallaba antes por falta de ID)
             var usuarioLimpio = new UsuarioResponseDTO
             {
+                Id = usuarioEntidad.Id, // <--- ¡CRUCIAL PARA EL LOGIN! 🔑
                 Nombre = usuarioEntidad.Nombre,
                 Apellido = usuarioEntidad.Apellido,
                 CorreoElectronico = usuarioEntidad.CorreoElectronico,
-                Roll =  usuarioEntidad.Roll.ToString()
+                Roll = usuarioEntidad.Roll.ToString(),
+                Genero = usuarioEntidad.Genero.ToString()
             };
 
-            // ... Y devuelvo 200 OK (Verde)
-            return Ok(usuarioLimpio); // <--- ¡Asegúrate que diga Ok aquí!
+            return Ok(usuarioLimpio);
         }
-
     }
 }

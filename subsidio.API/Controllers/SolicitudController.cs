@@ -4,6 +4,7 @@ using subsidio.Business.services;
 using subsidio.Dominio.DTOs;
 using subsidio.Dominio.Entities;
 using static subsidio.Dominio.Enums;
+using System.Linq; // <--- IMPORTANTE PARA QUE FUNCIONE EL .Select
 
 namespace subsidio.API.Controllers
 {
@@ -19,39 +20,46 @@ namespace subsidio.API.Controllers
         }
 
         [HttpPost]
-
         public async Task<ActionResult> Crear([FromBody] SolicitudDTO DTO)
         {
             try
             {
                 var nuevaSolicitud = await _solicitud.CrearSolicitud(DTO);
-
                 return Ok(nuevaSolicitud);
-
             }
-
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpGet("usuario/{usuarioId}")]
-
-        public async Task<ActionResult> ObtenerSolicitudesDelUsuario(int usuarioId)
+        public async Task<ActionResult<List<SolicitudResponseDTO>>> ObtenerSolicitudesDelUsuario(int usuarioId)
         {
+            // 1. Traemos la data cruda (que YA incluye el medicamento gracias a tu servicio)
             var solicitudes = await _solicitud.ObtenerPorUsuario(usuarioId);
 
             if (solicitudes == null || !solicitudes.Any())
             {
-                // Opcional: devolver Ok con lista vacía o NotFound
-                return Ok(new List<SolicitudSubsidio>());
+                return Ok(new List<SolicitudResponseDTO>());
             }
 
-            return Ok(solicitudes);
+            var respuesta = solicitudes.Select(s => new SolicitudResponseDTO
+            {
+                SolicitudId = s.Id,
+                UsuarioId = s.SolicitanteId, 
+
+                MedicamentoNombre = s.MedicamentoSolicitado != null ? s.MedicamentoSolicitado.Nombre : "Desconocido",
+                MedicamentoPrecio = s.MedicamentoSolicitado != null ? s.MedicamentoSolicitado.Precio : 0,
+
+                Estado = s.Estado.ToString(),
+                FechaSolicitud = s.FechaSolicitud
+            }).ToList();
+
+            return Ok(respuesta);
         }
 
-        [HttpPut("{id}/estado")] // PUT: api/Solicitud/1/estado
+        [HttpPut("{id}/estado")]
         public async Task<IActionResult> ActualizarEstado(int id, [FromBody] EstadoSolicitud nuevoEstado)
         {
             try
