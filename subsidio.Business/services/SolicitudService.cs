@@ -62,5 +62,12 @@ namespace subsidio.Business.services
             solicitud.Estado = nuevoEstado; // Aquí ocurre la magia
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<SolicitudSubsidio>> ObtenerTodos()
+        {
+            return await _context.SolicitudSubsidios.
+                Include(s => s.MedicamentoSolicitado)
+                .Include(s => s.Solicitante).ToListAsync();
+        }
     }
 }

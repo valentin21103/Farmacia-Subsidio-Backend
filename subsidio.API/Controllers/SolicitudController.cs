@@ -72,5 +72,68 @@ namespace subsidio.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        // ==========================================
+        //  NUEVOS MÉTODOS PARA EL ADMINISTRADOR
+        // ==========================================
+
+
+        [HttpGet("pendientes")]
+
+        public async Task<ActionResult<List<SolicitudResponseDTO>>> ObtenerPendientes()
+        {
+            var todas = await _solicitud.ObtenerTodos();
+
+            var pendientes = todas
+                .Where(s => s.Estado == EstadoSolicitud.Pendiente)
+                .Select(s => new SolicitudResponseDTO
+                {
+                    SolicitudId = s.Id,
+                    UsuarioId = s.SolicitanteId,
+                    UsuarioNombre = s.Solicitante != null ? s.Solicitante.Nombre : "usuario Desconocido",
+                    MedicamentoNombre = s.MedicamentoSolicitado != null ? s.MedicamentoSolicitado.Nombre : "desconocido",
+                    MedicamentoPrecio = s.MedicamentoSolicitado != null ? s.MedicamentoSolicitado.Precio : 0,
+                    Estado = s.Estado.ToString(),
+                    FechaSolicitud = s.FechaSolicitud
+                }).ToList();
+
+            return Ok(pendientes);
+        }
+
+        [HttpPut("{id}/aprobar")]
+
+        public async Task<ActionResult> aprobarSolicitud(int id)
+        {
+            try
+            {
+                await _solicitud.CambiarEstado(id, EstadoSolicitud.Aprobado);
+                return Ok(new { mensaje = "Solicitud Aprobada" });
+
+
+            }
+
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+
+        [HttpPut("{id}/rechazar")]
+
+        public async Task<ActionResult> rechazarSolicitud(int id)
+        {
+            try
+            {
+                await _solicitud.CambiarEstado(id, EstadoSolicitud.Rechazado);
+                return Ok(new { mensaje = "Solicitud Rechazada" });
+            }
+
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message); 
+            }
+        }
     }
 }

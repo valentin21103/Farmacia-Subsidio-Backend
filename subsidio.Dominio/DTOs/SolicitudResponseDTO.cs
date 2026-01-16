@@ -9,7 +9,7 @@ namespace subsidio.Dominio.DTOs
         public int SolicitudId { get; set; }
         public int UsuarioId { get; set; }
 
-        // 👇 FALTABA "required" O "?" (Para evitar error de NULL)
+        public string? UsuarioNombre { get; set; }
         public required string MedicamentoNombre { get; set; }
         public decimal MedicamentoPrecio { get; set; }
 
