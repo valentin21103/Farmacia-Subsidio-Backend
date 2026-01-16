@@ -42,4 +42,15 @@ Maneja la persistencia y comunicación con la Base de Datos.
 - **Seguridad:** JWT (JSON Web Tokens) para manejo de roles.
 
 ---
+## 🗄️ Configuración de la Base de Datos (Migrations)
 
+El proyecto utiliza **Entity Framework Core (Code First)**. No necesitas scripts SQL manuales, el código creará la base de datos por ti.
+
+### Paso 1: Configurar conexión
+Abre el archivo `appsettings.json` en la carpeta `subsidio.API`. Cambia el valor de `Server=` por el nombre de tu servidor SQL local.
+
+### Paso 2: Ejecutar la migración
+Abre una terminal en la **carpeta raíz de la solución** (al mismo nivel que el archivo `.sln`) y ejecuta el siguiente comando para impactar los cambios:
+
+```bash
+dotnet ef database update --project subsidio.Infraestructura --startup-project subsidio.API
