@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using subsidio.Business.services;
 using subsidio.Infraestructura.Data;
 
@@ -39,6 +41,22 @@ builder.Services.AddScoped<SolicitudService>();
 // Asegúrate de que IUsuarioService e IMedicamentoService existan
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IMedicamentoService, MedicamentoService>();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+
+        }
+    });
+
+
 
 var app = builder.Build();
 
